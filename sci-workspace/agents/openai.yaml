@@ -1,0 +1,4 @@
+interface:
+  display_name: "SCI 论文工作区"
+  short_description: "搭建与检查 SCI 论文项目目录，约定文献、稿件、数据和结果的存放位置"
+  default_prompt: "使用 $sci-workspace 检查当前论文项目的已有结构，保留现有文件，搭建或补齐所需目录，并生成简短的工作区指南。"
