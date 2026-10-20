@@ -104,9 +104,3 @@ python scripts/workspace.py status --root ../PaperA
 ```bash
 python -m unittest discover -s tests -v
 ```
-
-## 参考与许可
-
-参考 [easyplot](https://github.com/Rimagination/easyplot) 的轻量 skill 组织方式，以及 [Open Science Skills](https://github.com/scdenney/open-science-skills) 和 [Cookiecutter Data Science](https://github.com/drivendataorg/cookiecutter-data-science) 的工作区组织思路。
-
-原创代码与文档采用 [MIT License](./LICENSE)。
