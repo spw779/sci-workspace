@@ -128,12 +128,50 @@ def inspect_path(root, path, kind, optional=False):
     return report
 
 
+def inspect_drafts(root, directory, name):
+    """List Word filenames in one directory without opening document contents."""
+    directory_report = inspect_path(root, directory, "directory")
+    result = {
+        "name": name, "directory": str(directory), "state": directory_report["state"],
+        "versioned_files": [], "highest_version": None, "other_files": [], "warnings": [],
+    }
+    if directory_report["state"] == "conflict":
+        result["warnings"].append(directory_report["detail"])
+    if directory_report["state"] != "present":
+        return result
+    pattern = re.compile(re.escape(name) + r"_v([0-9]+)\.docx", re.I)
+    try:
+        checked_path(root, directory, "directory", required=True)
+        for path in sorted(directory.iterdir(), key=lambda item: (item.name.casefold(), item.name)):
+            if path.name.startswith("~$") or path.suffix.casefold() not in (".docx", ".doc"):
+                continue
+            try:
+                checked_path(root, path, "file", required=True)
+            except (WorkspaceError, OSError, RuntimeError) as error:
+                result["warnings"].append(str(error))
+                continue
+            match = pattern.fullmatch(path.name)
+            if match:
+                result["versioned_files"].append({"path": str(path), "version": int(match[1])})
+            else:
+                result["other_files"].append(str(path))
+    except (WorkspaceError, OSError, RuntimeError) as error:
+        result["warnings"].append(str(error))
+    result["versioned_files"].sort(key=lambda item: (item["version"], item["path"].casefold(), item["path"]))
+    if result["versioned_files"]:
+        result["highest_version"] = result["versioned_files"][-1]["version"]
+    return result
+
+
 def status(args):
     root = root_path(args.root)
     chapters = root / "03_chapter"
     default_chapters = [chapters / name for name in DEFAULT_SECTIONS]
     result = {
         "root": str(root),
+        "layout": "standard",
+        "layout_note": "Checks standard paths only; custom paths in WORKSPACE_GUIDE.md are not parsed. "
+                       "Draft warnings are reported inside each drafts group.",
         "directories": [inspect_path(root, root / name, "directory") for name in TOP_LEVEL],
         "documents": [inspect_path(root, root / name, "file") for name in DOCUMENTS],
         "chapters": [inspect_path(root, path, "directory") for path in default_chapters],
@@ -157,6 +195,11 @@ def status(args):
             result["warnings"].append("Required workspace item is missing: " + report["path"])
         elif report["state"] == "conflict":
             result["warnings"].append(report["detail"])
+    result["drafts"] = {
+        "manuscript": inspect_drafts(root, root / "02_manuscript", "manuscript"),
+        "chapters": [inspect_drafts(root, Path(report["path"]), Path(report["path"]).name)
+                     for report in result["chapters"]],
+    }
     return result
 
 
@@ -171,19 +214,19 @@ def main():
     init.add_argument("--with-subdirs", action="store_true", help="Add the six optional data/results subdirectories.")
     init.add_argument("--dry-run", action="store_true", help="Preview changes without creating files or directories.")
     init.set_defaults(action=initialize)
-    inspect = commands.add_parser("status", help="Inspect directory and guide-file presence without reading contents.")
+    inspect = commands.add_parser("status", help="Inspect structure and draft filenames without reading document contents.")
     inspect.add_argument("--root", required=True)
     inspect.set_defaults(action=status)
     args = parser.parse_args()
     try:
         result = args.action(args)
     except (WorkspaceError, OSError, RuntimeError, ValueError) as error:
-        print(json.dumps({"error": str(error)}, ensure_ascii=False), file=sys.stderr)
+        print(json.dumps({"error": str(error)}, ensure_ascii=True), file=sys.stderr)
         return 1
     except KeyboardInterrupt:
         print(json.dumps({"error": "Interrupted."}), file=sys.stderr)
         return 130
-    print(json.dumps(result, ensure_ascii=False, indent=2))
+    print(json.dumps(result, ensure_ascii=True, indent=2))
     return 0
 
 
