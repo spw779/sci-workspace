@@ -1,11 +1,11 @@
 ---
 name: sci-workspace
-description: 搭建、检查和补齐 SCI 论文工作区，默认建立文献、整稿、章节、数据、结果五个目录和 Abstract、Introduction、Methods、Results、Discussion、Conclusions 六章。用于开始写论文、新建或接续论文项目、补齐目录，以及说明文件放在哪里。
+description: 搭建、检查和补齐 SCI 论文工作区，默认建立文献、整稿、章节、数据、结果五个目录和 Abstract、Introduction、Methods、Results、Discussion、Conclusions 六章，约定整稿与章节的 Word 版本保存方式。用于开始写论文、新建或接续论文项目、补齐目录，以及说明稿件和其他文件放在哪里。
 ---
 
 # SCI 论文工作区
 
-为每篇论文维护一份简短的 `WORKSPACE_GUIDE.md`，记录本项目的实际目录和必要约定。
+围绕整篇 manuscript 的写作与修订，为每篇论文维护一份简短的 `WORKSPACE_GUIDE.md`，记录实际目录和稿件版本约定。
 
 ## 工作流程
 
@@ -20,7 +20,7 @@ description: 搭建、检查和补齐 SCI 论文工作区，默认建立文献�
 | 路径 | 用途 |
 | --- | --- |
 | `01_reference/` | 文献及阅读材料 |
-| `02_manuscript/` | 完整稿件 |
+| `02_manuscript/` | 完整 Word 稿件及其版本：`manuscript_v1.docx`、`manuscript_v2.docx` 等 |
 | `03_chapter/` | 分章节稿件 |
 | `04_data/` | 实验数据、原始照片、记录及数据说明 |
 | `05_results/` | 分析输出、结果表和稿件图片 |
@@ -28,6 +28,13 @@ description: 搭建、检查和补齐 SCI 论文工作区，默认建立文献�
 初始化时在 `03_chapter/` 建立 **Abstract、Introduction、Methods、Results、Discussion、Conclusions** 六章，同时生成 `WORKSPACE_GUIDE.md` 和 `AGENTS.md`。Conclusions 是否独立写入整稿由目标期刊决定。
 
 按需增加 `04_data/{raw,processed,metadata}` 和 `05_results/{statistics,tables,figures}`，其余目录随任务添加。`03_chapter/Results` 存正文，`05_results` 存结果材料。
+
+## 稿件版本
+
+- 将整稿保存在 `02_manuscript/manuscript_vN.docx`，将各章节保存在 `03_chapter/<Section>/<Section>_vN.docx`。
+- 首稿从 `v1` 开始。交付新修订稿前检查同类文件，按现有最大数字版本号加一另存，保留旧版；整稿和每个章节独立编号。
+- 保留已有的 `manuscript.docx` 等旧文件，不自动改名或覆盖。新稿默认使用 Word，用户指定的命名、格式或覆盖要求优先。
+- 在实际写作或合稿时生成稿件。初始化只创建目录和说明；将上述保存约定交给执行写作或合稿的任务。
 
 ## 工具
 

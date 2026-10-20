@@ -8,7 +8,7 @@
 
 # sci-workspace
 
-一个轻量的 SCI 论文工作区 skill。告诉 Codex 等 Agent 你要开始写一篇论文，它会搭好目录，让文献、整稿、章节、数据和结果各有位置。
+一个轻量的 SCI 论文工作区 skill，以完成并持续修订整篇 manuscript 为目标。告诉 Codex 等 Agent 你要开始写一篇论文，它会搭好目录，让文献、整稿、章节、数据和结果各有位置。
 
 默认创建五个顶层目录和六个常用章节，已有文件保留，材料子目录按需增加。
 
@@ -38,7 +38,7 @@ https://github.com/spw779/sci-workspace
 | 目录 | 放什么 |
 | --- | --- |
 | `01_reference/` | 文献 PDF 和阅读材料 |
-| `02_manuscript/` | 完整稿件 |
+| `02_manuscript/` | 整篇论文的 Word 稿件，按 `manuscript_v1.docx`、`manuscript_v2.docx` 等保存 |
 | `03_chapter/` | 分章节稿件，默认包含下列六章 |
 | `04_data/` | 实验数据、原始照片、记录及数据说明 |
 | `05_results/` | 分析输出、结果表和稿件图片 |
@@ -56,6 +56,20 @@ https://github.com/spw779/sci-workspace
 ```
 
 这会增加 `04_data/{raw,processed,metadata}` 和 `05_results/{statistics,tables,figures}`。其他章节、实验批次、补充材料或分析代码目录按实际任务添加。
+
+## 整稿与章节版本
+
+`02_manuscript/` 在初始化时就会创建，用来保存整篇论文，与各章节一样保留 Word 版本：
+
+| 稿件 | 文件夹 | 文件名示例 |
+| --- | --- | --- |
+| 整篇 manuscript | `02_manuscript/` | `manuscript_v1.docx`、`manuscript_v2.docx` |
+| Methods 章节 | `03_chapter/Methods/` | `Methods_v1.docx`、`Methods_v2.docx` |
+| Results 章节 | `03_chapter/Results/` | `Results_v1.docx`、`Results_v2.docx` |
+
+其他章节使用相同的 `<Section>_vN.docx` 规则。首稿从 `v1` 开始；交付新修订稿时，按该类稿件现有最大数字版本号加一另存，保留旧版。整稿与各章节各自编号，例如 `manuscript_v2.docx` 可以使用 `Methods_v4.docx` 的内容。
+
+已有的 `manuscript.docx` 或其他命名文件保留原样；后续新稿按上述约定保存，用户另有命名或格式要求时遵循用户要求。实际写作或合稿时生成 Word 文件。
 
 ## 已有项目
 

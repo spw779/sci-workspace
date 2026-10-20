@@ -13,7 +13,7 @@
 | 路径 | 放什么 |
 | --- | --- |
 | `01_reference/` | 文献 PDF、阅读材料和已有引用库导出 |
-| `02_manuscript/` | 完整稿件，如 `manuscript.docx` |
+| `02_manuscript/` | 整篇论文的 Word 版本：`manuscript_v1.docx`、`manuscript_v2.docx` 等 |
 | `03_chapter/` | 分章节稿件 |
 | `04_data/` | 实验数据、原始照片、记录及数据说明 |
 | `05_results/` | 分析输出、结果表和稿件图片 |
@@ -26,7 +26,9 @@
 
 ## 文件约定
 
-- 保留已有文件名和格式。新章节稿可使用 `<Section>_vN.docx`；具体版本管理由写作任务处理。
+- 整稿保存为 `02_manuscript/manuscript_vN.docx`；章节保存为 `03_chapter/<Section>/<Section>_vN.docx`，如 `03_chapter/Methods/Methods_v1.docx`。
+- 首稿从 `v1` 开始；交付新修订稿时，按同类文件现有最大数字版本号加一另存并保留旧版。整稿与每个章节独立编号。
+- 已有的 `manuscript.docx` 等文件保留原名。新稿默认使用 Word，用户另有命名、格式或覆盖要求时遵循用户要求。
 - 保留原始输入，处理后的数据与分析输出另存。原始照片放数据目录，排版后的稿件图片放结果目录。
 - 初始化只搭建目录和说明；稿件、文献索引及分析记录在需要时创建。
 - 大型数据或独立分析项目记录真实路径及必要版本信息。
