@@ -22,4 +22,4 @@ jobs:
         with:
           python-version: '3.12'
       - name: Run workspace checks
-        run: python -m unittest discover -s sci-workspace/tests -v
+        run: python -m unittest discover -s tests -v

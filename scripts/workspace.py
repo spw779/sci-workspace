@@ -9,6 +9,7 @@ import sys
 
 
 TOP_LEVEL = ("01_reference", "02_manuscript", "03_chapter", "04_data", "05_results")
+DEFAULT_SECTIONS = ("Abstract", "Introduction", "Methods", "Results", "Discussion", "Conclusions")
 DOCUMENTS = ("AGENTS.md", "WORKSPACE_GUIDE.md")
 OPTIONAL_SUBDIRS = (
     "04_data/raw", "04_data/processed", "04_data/metadata",
@@ -62,9 +63,13 @@ def checked_path(root, path, kind, required=False):
 
 def initialize(args):
     root = root_path(args.root, must_exist=False)
-    sections = [section_name(name) for name in args.sections]
-    if len({name.casefold() for name in sections}) != len(sections):
+    extra_sections = [section_name(name) for name in args.sections]
+    if len({name.casefold() for name in extra_sections}) != len(extra_sections):
         raise WorkspaceError("Section names must be unique, including when case is ignored.")
+    default_names = {name.casefold() for name in DEFAULT_SECTIONS}
+    sections = list(DEFAULT_SECTIONS) + [
+        name for name in extra_sections if name.casefold() not in default_names
+    ]
     directories = [root] + [root / name for name in TOP_LEVEL]
     directories += [root / "03_chapter" / name for name in sections]
     if args.with_subdirs:
@@ -125,22 +130,23 @@ def inspect_path(root, path, kind, optional=False):
 
 def status(args):
     root = root_path(args.root)
+    chapters = root / "03_chapter"
+    default_chapters = [chapters / name for name in DEFAULT_SECTIONS]
     result = {
         "root": str(root),
         "directories": [inspect_path(root, root / name, "directory") for name in TOP_LEVEL],
         "documents": [inspect_path(root, root / name, "file") for name in DOCUMENTS],
-        "chapters": [],
+        "chapters": [inspect_path(root, path, "directory") for path in default_chapters],
         "optional_subdirectories": [
             inspect_path(root, root / name, "directory", optional=True) for name in OPTIONAL_SUBDIRS
         ],
         "warnings": [],
     }
-    chapters = root / "03_chapter"
     if result["directories"][2]["state"] == "present":
         try:
             checked_path(root, chapters, "directory", required=True)
             for child in sorted(chapters.iterdir(), key=lambda path: path.name):
-                if child.is_dir() or child.is_symlink():
+                if child not in default_chapters and (child.is_dir() or child.is_symlink()):
                     result["chapters"].append(inspect_path(root, child, "directory"))
         except (WorkspaceError, OSError, RuntimeError) as error:
             result["warnings"].append(str(error))
@@ -160,7 +166,8 @@ def main():
     init = commands.add_parser("init", help="Create missing scaffold items; preserve existing files.")
     init.add_argument("--root", required=True)
     init.add_argument("--project-name")
-    init.add_argument("--sections", nargs="+", default=[], help="Chapter directories to add; none by default.")
+    init.add_argument("--sections", nargs="+", default=[],
+                      help="Add extra chapter directories alongside the six default SCI sections.")
     init.add_argument("--with-subdirs", action="store_true", help="Add the six optional data/results subdirectories.")
     init.add_argument("--dry-run", action="store_true", help="Preview changes without creating files or directories.")
     init.set_defaults(action=initialize)
