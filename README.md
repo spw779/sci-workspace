@@ -104,3 +104,7 @@ python scripts/workspace.py status --root ../PaperA
 ```bash
 python -m unittest discover -s tests -v
 ```
+
+## 许可证
+
+本项目采用 [MIT License](./LICENSE)。
