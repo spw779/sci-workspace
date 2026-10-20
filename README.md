@@ -1,4 +1,6 @@
-![sci-workspace](./assets/banner.svg)
+<p align="center">
+  <img src="./assets/banner.png" alt="sci-workspace：蓝绿色书页标志与手绘字标" width="920">
+</p>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
 ![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)
